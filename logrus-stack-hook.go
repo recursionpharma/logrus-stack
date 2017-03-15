@@ -14,17 +14,14 @@ import (
 func NewHook(callerLevels []logrus.Level, stackLevels []logrus.Level) LogrusStackHook {
 	return LogrusStackHook{
 		CallerLevels: callerLevels,
-		StackLevels: stackLevels,
+		StackLevels:  stackLevels,
 	}
 }
 
 // StandardHook is a convenience initializer for LogrusStackHook{} with
 // default args.
 func StandardHook() LogrusStackHook {
-	return LogrusStackHook{
-		CallerLevels: logrus.AllLevels,
-		StackLevels: []logrus.Level{logrus.PanicLevel, logrus.FatalLevel, logrus.ErrorLevel},
-	}
+	return NewHook(logrus.AllLevels, []logrus.Level{logrus.PanicLevel, logrus.FatalLevel, logrus.ErrorLevel})
 }
 
 // LogrusStackHook is an implementation of logrus.Hook interface.
@@ -35,7 +32,7 @@ type LogrusStackHook struct {
 
 	// Set levels to StackLevels for which "stack" value may be set,
 	// providing the full stack (minus logrus).
-	StackLevels  []logrus.Level
+	StackLevels []logrus.Level
 }
 
 // Levels provides the levels to filter.
@@ -45,26 +42,20 @@ func (hook LogrusStackHook) Levels() []logrus.Level {
 
 // Fire is called by logrus when something is logged.
 func (hook LogrusStackHook) Fire(entry *logrus.Entry) error {
-	var skipFrames int
-	if len(entry.Data) == 0 {
-		// When WithField(s) is not used, we have 8 logrus frames to skip.
-		skipFrames = 8
-	} else {
-		// When WithField(s) is used, we have 6 logrus frames to skip.
-		skipFrames = 6
-	}
-
 	var frames stack.Stack
 
-	// Get the complete stack track past skipFrames count.
-	_frames := stack.Callers(skipFrames)
+	// Callers(0) is this function, and Callers(1) is the function that invokes
+	// this function.
+	_frames := stack.Callers(2)
 
 	// Remove logrus's own frames that seem to appear after the code is through
 	// certain hoops. e.g. http handler in a separate package.
 	// This is a workaround.
-	for _, frame := range _frames {
-		if !strings.Contains(frame.File, "github.com/Sirupsen/logrus") {
-			frames = append(frames, frame)
+	for idx, frame := range _frames {
+		// Skip the initial logrus frames -- original code analyzes the entire stack
+		if !strings.Contains(strings.ToLower(frame.File), "github.com/sirupsen/logrus") {
+			frames = append(frames, _frames[idx:]...)
+			break
 		}
 	}
 
