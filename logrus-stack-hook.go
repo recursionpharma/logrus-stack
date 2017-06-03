@@ -3,8 +3,8 @@ package logrus_stack
 import (
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/facebookgo/stack"
+	"github.com/sirupsen/logrus"
 )
 
 // NewHook is the initializer for LogrusStackHook{} (implementing logrus.Hook).

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"os"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/recursionpharma/logrus-stack"
+	"github.com/sirupsen/logrus"
 )
 
 type Worker struct {
