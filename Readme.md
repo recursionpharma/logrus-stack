@@ -1,3 +1,5 @@
+[![scorecard-score](https://github.com/recursionpharma/octo-guard-badges/blob/trunk/badges/repo/logrus-stack/maturity_score.svg?raw=true)](https://infosec-docs.prod.rxrx.io/octoguard/scorecards/logrus-stack)
+[![scorecard-status](https://github.com/recursionpharma/octo-guard-badges/blob/trunk/badges/repo/logrus-stack/scorecard_status.svg?raw=true)](https://infosec-docs.prod.rxrx.io/octoguard/scorecards/logrus-stack)
 # logrus-stack 🎯
 [![GoDoc](https://godoc.org/github.com/Gurpartap/logrus-stack?status.svg)](https://godoc.org/github.com/Gurpartap/logrus-stack)
 
